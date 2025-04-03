@@ -1,0 +1,43 @@
+import pygame
+import random
+pygame.init()
+WIDTH, HEIGHT = 500, 500
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Aim Trainer")
+WHITE = (255, 255, 255)
+WHITE1 = (255, 255, 230)
+BLUE = (0, 0, 255)
+x, y = random.randint(50, WIDTH - 50), random.randint(50, HEIGHT - 50)
+RADIUS = 30
+font = pygame.font.SysFont("Arial", 30)
+start = pygame.time.get_ticks()
+last_move_time = 0
+MOVE_INTERVAL = 1000
+score = 0
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mx, my = pygame.mouse.get_pos()
+            p = (((mx-x)**2)+((my-y)**2))**0.5
+            if p <=RADIUS:
+                score+=1
+                print(f"Ти влучив {score} разів!")
+    current_time = pygame.time.get_ticks()
+    if current_time - last_move_time >= MOVE_INTERVAL:
+        x, y = random.randint(50, WIDTH - 50), random.randint(50, HEIGHT - 50)
+        last_move_time = current_time
+    screen.fill(WHITE)
+    if score >= 10:
+        screen.fill(WHITE1)
+    text = font.render(f"{score} hits", True, (0,0,0))
+    screen.blit(text,(10,10))
+    eltime = (current_time - start)//1000
+    titext = font.render(f"time: {eltime}", True, (0,0,0))
+    screen.blit(titext,(10,40))
+    pygame.draw.rect(screen, (0, 255, 0), (0,0,500,500), 10)
+    pygame.draw.circle(screen, BLUE, (x, y), RADIUS)
+    pygame.display.flip() 
+pygame.quit()
